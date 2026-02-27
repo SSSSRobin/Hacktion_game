@@ -4,8 +4,6 @@ from Menu import affichage_menu  # affichage_menu -> Fonction affichant le menu
 
 from Jeu import affichage_jeu
 
-from Classe_Jeu import JeuBCI
-
 from Calibrage import *
 
 
@@ -55,7 +53,7 @@ while running:
 
 
     if current_page == 'calibrage':
-        result = "yes"
+        result = affichage_calibrage(screen, clock, largeur, hauteur)
         if result == "go_to_menu":
             current_page = "menu"
         elif result[0] == 'quit':

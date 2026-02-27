@@ -3,6 +3,8 @@ import sys
 import time
 from pygame.locals import *
 
+from Classe_Obstacle import Obstacle
+
 from Classe_Boule import Boule
 
 
