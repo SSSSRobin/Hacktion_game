@@ -4,6 +4,8 @@ from Menu import affichage_menu  # affichage_menu -> Fonction affichant le menu
 
 from Jeu import affichage_jeu
 
+from Victoire import affichage_victoire
+
 from Calibrage import *
 
 
@@ -43,9 +45,11 @@ while running:
 
             
     if current_page == "jeu":
-        print("JEU!")  # Test temporaire
         result = affichage_jeu(screen, clock, largeur, hauteur)
-        if result == "go_to_menu":
+        if isinstance(result, tuple) and result[0] == "go_to_victoire":
+            temps_victoire = result[1]
+            current_page = "victoire"
+        elif result == "go_to_menu":
             current_page = "menu"
         elif result == "quit":
             running = False
@@ -57,6 +61,13 @@ while running:
         if result == "go_to_menu":
             current_page = "menu"
         elif result[0] == 'quit':
+            running = False
+
+    if current_page == "victoire":
+        result = affichage_victoire(screen, clock, largeur, hauteur, temps_victoire)
+        if result == "go_to_menu":
+            current_page = "menu"
+        elif result == "quit":
             running = False
 
             
