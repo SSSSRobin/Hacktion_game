@@ -11,8 +11,8 @@ class CalibrageBCI:
         self.fleche_droite = pygame.image.load("Images/Fleche_droite.png").convert_alpha()
 
         # optionnel : redimensionner
-        self.fleche_gauche = pygame.transform.scale(self.fleche_gauche, (200,200))
-        self.fleche_droite = pygame.transform.scale(self.fleche_droite, (200,200))
+        self.fleche_gauche = pygame.transform.scale(self.fleche_gauche, (250,250))
+        self.fleche_droite = pygame.transform.scale(self.fleche_droite, (250,250))
 
         # Boule
         self.boule_x = largeur // 2
@@ -131,4 +131,4 @@ class CalibrageBCI:
             if direction == "gauche":
                 screen.blit(self.fleche_gauche, (150, self.hauteur//2-60))
             else:
-                screen.blit(self.fleche_droite, (self.largeur-250, self.hauteur//2-60))
+                screen.blit(self.fleche_droite, (self.largeur-350, self.hauteur//2-60))

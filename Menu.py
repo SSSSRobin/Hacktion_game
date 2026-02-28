@@ -62,9 +62,10 @@ def affichage_menu(screen, clock, largeur, hauteur):
         # Nettoyage de l'écran principal
         screen.fill((200, 170, 255))
 
-        logo_h = int(0.3 * hauteur)  # 12% hauteur écran
+        logo_h = int(0.7 * hauteur) # logo
         img_logo = scale_proportionnel(img_logo_orig, cible_h=logo_h)
-        logo_rect = img_logo.get_rect(topleft=(20, 20))
+
+        logo_rect = img_logo.get_rect(midtop=(largeur // 2, 20))
         screen.blit(img_logo, logo_rect)
 
         # --- TAILLE DES BOUTONS (plus grands) ---
