@@ -1,4 +1,5 @@
 import random
+import pygame
 
 class Obstacle:
     def __init__(self, largeur_ecran, hauteur_ecran, route_x, route_largeur, scale):
@@ -13,8 +14,14 @@ class Obstacle:
         self.base_largeur = 60 + random.randint(-20, 40)
         self.base_hauteur = 35
 
-        self.largeur = int(self.base_largeur * scale)
-        self.hauteur = int(self.base_hauteur * scale)
+        self.largeur = int(self.base_largeur * scale * 1.4)
+        self.hauteur = int(self.base_hauteur * scale * 1.4)
+
+        liste = ["Obstacle_1.png", "Obstacle_2.png", "Obstacle_3.png"]
+        nom = random.choice(liste)
+
+        self.image_originale = pygame.image.load(f"Images/{nom}").convert_alpha()
+        self.image = pygame.transform.scale(self.image_originale, (self.largeur, self.hauteur))
 
         # position aléatoire dans la route
         self.x = random.randint(
@@ -33,8 +40,10 @@ class Obstacle:
         self.scale = scale
 
         # recalcul tailles
-        self.largeur = int(self.base_largeur * scale)
-        self.hauteur = int(self.base_hauteur * scale)
+        self.largeur = int(self.base_largeur * scale * 1.2)
+        self.hauteur = int(self.base_hauteur * scale * 1.2)
+
+        self.image = pygame.transform.scale(self.image_originale, (self.largeur, self.hauteur))
 
         # garde l’obstacle dans la route
         self.x = max(
@@ -45,3 +54,6 @@ class Obstacle:
     def update(self, vitesse_route):
         self.y += vitesse_route
         return self.y > self.hauteur_ecran
+
+    def draw(self, screen):
+        screen.blit(self.image, (int(self.x), int(self.y)))

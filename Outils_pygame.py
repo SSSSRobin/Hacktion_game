@@ -45,5 +45,27 @@ def adapt_font(text, font_name, w_max, h_max):
     else:
         return pygame.font.Font(font_name, 3)
 
+def blit_image_proportionnelle(screen, img_originale, rect):
+    img_w, img_h = img_originale.get_size()
+    rect_w, rect_h = rect.size
+
+    ratio_img = img_w / img_h
+    ratio_rect = rect_w / rect_h
+
+    if ratio_img > ratio_rect:
+        # Image plus large → on limite par largeur
+        new_w = rect_w
+        new_h = int(rect_w / ratio_img)
+    else:
+        # Image plus haute → on limite par hauteur
+        new_h = rect_h
+        new_w = int(rect_h * ratio_img)
+
+    img_scaled = pygame.transform.smoothscale(img_originale, (new_w, new_h))
+
+    # Centrer dans le rectangle
+    img_rect = img_scaled.get_rect(center=rect.center)
+    screen.blit(img_scaled, img_rect)
+
 
 default_font = pygame.font.Font(font_path,20)

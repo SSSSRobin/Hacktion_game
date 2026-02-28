@@ -11,9 +11,14 @@ BLANC = (255, 255, 255)
 ROUGE = (255, 0, 0)
 VERT = (0, 255, 0)
 GRIS = (128, 128, 128)
+LILAS = (245, 230, 255)
+MAUVE = (230, 215, 250)
 
 class JeuBCI:
     def __init__(self, largeur, hauteur):
+        self.image_arrivee_originale = pygame.image.load("Images/Ligne_Arrivee.png").convert_alpha()
+        self.image_arrivee = None
+        
         self.coeff_vitesse_obstacles = 0.5
         
         self.largeur = largeur
@@ -34,6 +39,11 @@ class JeuBCI:
         # Ligne d'arrivée
         self.arrivee_generee = False
         self.arrivee_rect = None
+
+##        self.image_arrivee = pygame.transform.scale(
+##            self.image_arrivee_originale,
+##            (self.arrivee_rect.width, self.arrivee_rect.height))
+        
         self.arrivee_vitesse = self.vitesse_route
         
         self.temps_depart = pygame.time.get_ticks()
@@ -59,7 +69,7 @@ class JeuBCI:
         self.scale_y = hauteur / self.base_hauteur
         self.scale = min(self.scale_x, self.scale_y)
         
-        self.vitesse_route = 4 * self.scale
+        self.vitesse_route = 4 * self.scale * self.coeff_vitesse_obstacles
 
         # Mettre à jour seulement la vitesse, sans reset l'état de victoire
         self.arrivee_vitesse = self.vitesse_route
@@ -71,6 +81,11 @@ class JeuBCI:
         if self.arrivee_rect is not None:
             self.arrivee_rect.x = route_x
             self.arrivee_rect.width = self.route_largeur
+
+        if self.arrivee_rect is not None:
+            self.image_arrivee = pygame.transform.scale(
+                self.image_arrivee_originale,
+                (self.arrivee_rect.width, self.arrivee_rect.height))
 
         self.score_font = pygame.font.Font(None, int(36 * self.scale))
         self.debug_font = pygame.font.Font(None, int(24 * self.scale))
@@ -105,7 +120,7 @@ class JeuBCI:
         # ✅ Spawn obstacles UNIQUEMENT si pas bloqué
         if not self.bloque:
             self.spawn_timer += 1
-            if self.spawn_timer > random.randint(60, 180):
+            if self.spawn_timer > random.randint(120, 300):
 
                 route_x = (self.largeur - self.route_largeur) // 2
 
@@ -164,32 +179,33 @@ class JeuBCI:
 
                 route_x = (self.largeur - self.route_largeur) // 2
 
+                hauteur_arrivee = int(80 * self.scale)  # ← augmente l'épaisseur ici
+
                 self.arrivee_rect = pygame.Rect(
                     route_x,
-                    -20,
+                    -hauteur_arrivee,
                     self.route_largeur,
-                    20
+                    hauteur_arrivee
                 )
+
+                self.image_arrivee = pygame.transform.scale(
+                    self.image_arrivee_originale,
+                    (self.arrivee_rect.width, self.arrivee_rect.height))
                 
     def draw(self, screen, largeur, hauteur):
 
-        screen.fill(NOIR)
+        screen.fill(MAUVE)
 
         route_x = (largeur - self.route_largeur) // 2
-        pygame.draw.rect(screen, GRIS, (route_x, 0, self.route_largeur, hauteur))
+        pygame.draw.rect(screen, LILAS, (route_x, 0, self.route_largeur, hauteur))
 
         # Dessiner ligne d'arrivée
-        if self.arrivee_rect:
-            pygame.draw.rect(screen, (255,255,255), self.arrivee_rect)
-            pygame.draw.line(screen, (0,0,0),
-                             (self.arrivee_rect.left, self.arrivee_rect.centery),
-                             (self.arrivee_rect.right, self.arrivee_rect.centery),
-                             3)
+        if self.arrivee_rect and self.image_arrivee:
+            screen.blit(self.image_arrivee, self.arrivee_rect)
             
         for obs in self.obstacles:
-            pygame.draw.rect(screen, ROUGE, (obs.x, obs.y, obs.largeur, obs.hauteur))
-            pygame.draw.rect(screen, BLANC, (obs.x, obs.y, obs.largeur, obs.hauteur), 2)
-
+            obs.draw(screen)
+    
         self.boule.draw(screen)
 
         temps = (pygame.time.get_ticks() - self.temps_depart) / 1000

@@ -7,6 +7,32 @@ from Outils_pygame import *  # On importe les fonctions précodées par moi-mêm
 from sys import exit
 
 
+def scale_proportionnel(img_orig, cible_w=None, cible_h=None):
+    """Retourne une surface redimensionnée en gardant les proportions."""
+    w, h = img_orig.get_size()
+    ratio = w / h
+
+    if cible_w is None and cible_h is None:
+        return img_orig
+
+    if cible_w is None:
+        new_h = cible_h
+        new_w = int(new_h * ratio)
+    elif cible_h is None:
+        new_w = cible_w
+        new_h = int(new_w / ratio)
+    else:
+        # si on donne les deux, on prend la contrainte la plus forte
+        ratio_cible = cible_w / cible_h
+        if ratio > ratio_cible:
+            new_w = cible_w
+            new_h = int(new_w / ratio)
+        else:
+            new_h = cible_h
+            new_w = int(new_h * ratio)
+
+    return pygame.transform.smoothscale(img_orig, (new_w, new_h))
+
 
 def affichage_menu(screen, clock, largeur, hauteur):
     """
@@ -14,6 +40,11 @@ def affichage_menu(screen, clock, largeur, hauteur):
     et un bouton central : "Génération du labyrinthe".
     """
     running = True
+
+    # --- IMAGES (chargées une seule fois) ---
+    img_jeu_orig = pygame.image.load("Images/Jeu.png").convert_alpha()
+    img_calib_orig = pygame.image.load("Images/Calibrage.png").convert_alpha()
+    img_logo_orig = pygame.image.load("Images/Logo.png").convert_alpha()
 
     while running :
         # ✅ 1️⃣ CALCULS BOUTONS TOUJOURS EN PREMIER (avant events)
@@ -29,7 +60,26 @@ def affichage_menu(screen, clock, largeur, hauteur):
         bouton_calib_rect = pygame.Rect(x_calib, y_boutons, bouton_largeur, bouton_hauteur)
 
         # Nettoyage de l'écran principal
-        screen.fill((200, 200, 200))
+        screen.fill((200, 170, 255))
+
+        logo_h = int(0.3 * hauteur)  # 12% hauteur écran
+        img_logo = scale_proportionnel(img_logo_orig, cible_h=logo_h)
+        logo_rect = img_logo.get_rect(topleft=(20, 20))
+        screen.blit(img_logo, logo_rect)
+
+        # --- TAILLE DES BOUTONS (plus grands) ---
+        bouton_w = int(0.35 * largeur)   # 35% largeur écran (plus petit qu’avant)
+
+        img_jeu = scale_proportionnel(img_jeu_orig, cible_w=bouton_w)
+        img_calib = scale_proportionnel(img_calib_orig, cible_w=bouton_w)
+
+        # --- POSITION GAUCHE / DROITE ---
+        jeu_rect = img_jeu.get_rect(center=(int(largeur * 0.30), int(hauteur * 0.55)))
+        calib_rect = img_calib.get_rect(center=(int(largeur * 0.70), int(hauteur * 0.55)))
+
+        # --- AFFICHAGE ---
+        screen.blit(img_jeu, jeu_rect)
+        screen.blit(img_calib, calib_rect)
 
         # On récupère les coordonnées du curseur de la souris
         mx, my = pygame.mouse.get_pos()       
@@ -53,16 +103,13 @@ def affichage_menu(screen, clock, largeur, hauteur):
             # ✅ 2️⃣ CLIC TESTÉ DIRECT DANS LA BOUCLE (Rects définis !)
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if bouton_jeu_rect.collidepoint(mx, my):
+                    if jeu_rect.collidepoint(mx, my):
                         return "go_to_jeu"
-                    elif bouton_calib_rect.collidepoint(mx, my):
+                    elif calib_rect.collidepoint(mx, my):
                         return "go_to_calibrage"
                     click = True  # Garde pour compatibilité
 
-        # Dessiner boutons (après events)
-        draw_button(screen, bouton_jeu_rect, "JEUX", (255,255,255), (100,200,100))
-        draw_button(screen, bouton_calib_rect, "CALIBRAGE", (255,255,255), (200,200,100))
-
+        
         pygame.display.flip()
         # 60 FPS
         clock.tick(60)

@@ -7,12 +7,12 @@ class CalibrageBCI:
         self.largeur = largeur
         self.hauteur = hauteur
 
-        self.fleche_gauche = pygame.image.load("Images/fleche_gauche.jpg").convert_alpha()
-        self.fleche_droite = pygame.image.load("Images/fleche_droite.jpg").convert_alpha()
+        self.fleche_gauche = pygame.image.load("Images/Fleche_gauche.png").convert_alpha()
+        self.fleche_droite = pygame.image.load("Images/Fleche_droite.png").convert_alpha()
 
         # optionnel : redimensionner
-        self.fleche_gauche = pygame.transform.scale(self.fleche_gauche, (150,150))
-        self.fleche_droite = pygame.transform.scale(self.fleche_droite, (150,150))
+        self.fleche_gauche = pygame.transform.scale(self.fleche_gauche, (200,200))
+        self.fleche_droite = pygame.transform.scale(self.fleche_droite, (200,200))
 
         # Boule
         self.boule_x = largeur // 2
@@ -129,6 +129,6 @@ class CalibrageBCI:
             font = pygame.font.Font(None, 120)
 
             if direction == "gauche":
-                screen.blit(self.fleche_gauche, (50, self.hauteur//2-60))
+                screen.blit(self.fleche_gauche, (150, self.hauteur//2-60))
             else:
-                screen.blit(self.fleche_droite, (self.largeur-150, self.hauteur//2-60))
+                screen.blit(self.fleche_droite, (self.largeur-250, self.hauteur//2-60))

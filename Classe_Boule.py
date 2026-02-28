@@ -16,7 +16,11 @@ class Boule:
         self.x = largeur // 2
         self.y = int(hauteur - 100 * scale)
 
-        self.rayon = int(25 * scale)
+        self.rayon = int(25 * scale * 1.6)
+
+        self.image_originale = pygame.image.load("Images/Cerveau.png").convert_alpha()
+        diam = self.rayon * 2
+        self.image = pygame.transform.scale(self.image_originale, (diam, diam))
 
         # vitesses adaptées
         self.vitesse_clavier = 5 * scale * self.coeff_vitesse_clavier
@@ -30,7 +34,11 @@ class Boule:
         self.scale = scale
 
         self.y = int(hauteur - 100 * scale)
-        self.rayon = int(25 * scale)
+        self.rayon = int(25 * scale * 1.6)
+
+        diam = self.rayon * 2
+        self.image = pygame.transform.scale(self.image_originale, (diam, diam))
+
         self.vitesse_clavier = 5 * scale * self.coeff_vitesse_clavier
         self.pas_bci = 5 * scale * self.coeff_vitesse_bci
 
@@ -54,4 +62,5 @@ class Boule:
         self.x = max(self.rayon, min(self.largeur - self.rayon, self.x))
 
     def draw(self, screen):
-        pygame.draw.circle(screen, BLEU, (int(self.x), int(self.y)), int(self.rayon))
+        rect = self.image.get_rect(center=(int(self.x), int(self.y)))
+        screen.blit(self.image, rect)

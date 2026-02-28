@@ -36,7 +36,7 @@ def affichage_jeu(screen, clock, largeur, hauteur):
         if jeu.temps_final is not None:
             return ("go_to_victoire", jeu.temps_final / 1000)
 
-        screen.fill((20, 20, 40))
+        screen.fill((200, 170, 255))
         jeu.draw(screen, largeur, hauteur)
 
         pygame.display.flip()
